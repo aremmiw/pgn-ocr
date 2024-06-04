@@ -52,7 +52,7 @@ if [ -z "$pgn" ]; then
 fi
 
 if $asciipgn; then
-	pgn=$(sed 'y/♔♕♖♘♗/KQRNB/' <<< "$pgn")
+	pgn="$(sed 'y/♔♕♖♘♗/KQRNB/' <<< "$pgn")"
 fi
 
 echo -e "$pgn" | tee >(xclip -r -in -selection clipboard)
