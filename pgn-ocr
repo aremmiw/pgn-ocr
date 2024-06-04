@@ -1,0 +1,58 @@
+#!/bin/bash
+# Assuming that Chess.traineddata is in the same directory as the script. If not, please change this.
+tdata_location="$(dirname -- "$0")"
+
+asciipgn=true
+required=( convert scrot sed tee tesseract xclip )
+
+show_help() {
+cat << EOF
+pgn-ocr - OCR chess notation into PGN format
+
+Dependencies: ${required[*]}
+
+Usage: pgn-ocr [OPTION]...
+ --no-ascii	don't convert unicode chess piece symbols into ASCII
+ --help		print this help
+
+When run your cursor will turn into a screenshot selection.
+Please screenshot the chess notation to be OCR'd.
+PGN will be send to stdout and put into your clipboard (X11 only).
+EOF
+exit
+}
+
+for dep in "${required[@]}"; do
+	if ! command -v "$dep" > /dev/null; then
+		echo -e "Missing dependency: $dep"
+		show_help
+	fi
+done
+
+for i in $*; do
+	case $i in
+	--no-ascii)
+		asciipgn=false
+	;;
+	--help)
+		show_help
+	;;
+	esac
+done
+
+if [ ! -f "$tdata_location/Chess.traineddata" ]; then
+	echo -e "Chess.traineddata not found, check \$tdata_location in script"
+	exit
+fi
+
+pgn="$(scrot -s -l mode=edge --file - 2>/dev/null | convert - -units pixelsperinch -density 300 -colorspace Gray - 2>/dev/null | TESSDATA_PREFIX="$tdata_location" tesseract -l Chess --dpi 300 --psm 6 stdin stdout 2>/dev/null )"
+
+if [ -z "$pgn" ]; then
+	show_help	
+fi
+
+if $asciipgn; then
+	pgn=$(sed 'y/♔♕♖♘♗/KQRNB/' <<< "$pgn")
+fi
+
+echo -e "$pgn" | tee >(xclip -r -in -selection clipboard)
