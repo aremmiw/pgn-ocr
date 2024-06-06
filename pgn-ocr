@@ -1,6 +1,6 @@
 #!/bin/bash
 # Assuming that Chess.traineddata is in the same directory as the script. If not, please change this.
-tdata_location="$(dirname -- "$0")"
+tdata_location="$(dirname -- "$(readlink -f -- "$0")")"
 
 asciipgn=true
 required=( convert scrot sed tee tesseract xclip )
