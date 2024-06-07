@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Assuming that Chess.traineddata is in the same directory as the script. If not, please change this.
 tdata_location="$(dirname -- "$(readlink -f -- "$0")")"
 
