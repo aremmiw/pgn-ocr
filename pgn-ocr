@@ -3,7 +3,7 @@
 tdata_location="$(dirname -- "$(readlink -f -- "$0")")"
 
 asciipgn=true
-required=( convert scrot sed tee tesseract xclip )
+required=( magick scrot sed tee tesseract xclip )
 
 show_help() {
 cat << EOF
@@ -45,7 +45,7 @@ if [ ! -f "$tdata_location/Chess.traineddata" ]; then
 	exit
 fi
 
-pgn="$(scrot -s -l mode=edge --file - 2>/dev/null | convert - -units pixelsperinch -density 300 -colorspace Gray - 2>/dev/null | TESSDATA_PREFIX="$tdata_location" tesseract -l Chess --dpi 300 --psm 6 stdin stdout 2>/dev/null )"
+pgn="$(scrot -s -l mode=edge --file - 2>/dev/null | magick - -units pixelsperinch -density 300 -colorspace Gray - 2>/dev/null | TESSDATA_PREFIX="$tdata_location" tesseract -l Chess --dpi 300 --psm 6 stdin stdout 2>/dev/null)"
 
 if [ -z "$pgn" ]; then
 	show_help	

@@ -7,7 +7,7 @@ I set it to a keybind in my window manager to conveniently get PGN from chess PD
 The script will probably only work under X11 on Linux/BSD, but the .traineddata file may still be useful on other platforms.
 
 ## dependencies
-* ImageMagick
+* ImageMagick 7
 * scrot
 * sed
 * tee
